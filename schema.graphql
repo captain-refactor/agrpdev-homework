@@ -1,0 +1,28 @@
+"""Object representing a file"""
+type File {
+  id: String!
+  name: String!
+  text: String!
+}
+
+"""Type of item"""
+enum ITEM_TYPE {
+  FILE
+  FOLDER
+}
+
+"""Object representing an item in hierarchy list"""
+type ListItem {
+  id: String!
+  name: String!
+  type: ITEM_TYPE!
+}
+
+type Query {
+  """Get list of ListItem"""
+  getList(id: String): [ListItem!]!
+
+  """Get File"""
+  getFile(id: String!): File!
+}
+

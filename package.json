@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --open",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "test": "jest",
+    "gql-codegen": "graphql-codegen --config codegen.yml",
+    "get-graphql-schema": "NODE_TLS_REJECT_UNAUTHORIZED=0 npx get-graphql-schema https://react-test.atlasconsulting.cz > schema.graphql"
   },
   "repository": {
     "type": "git",
