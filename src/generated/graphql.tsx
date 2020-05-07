@@ -1,11 +1,9 @@
-import { GraphQLResolveInfo } from 'graphql';
 import gql from 'graphql-tag';
-import React from "react";
+import * as React from 'react';
 import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactComponents from '@apollo/react-components';
 import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
-export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -69,6 +67,19 @@ export type GqlGetListQuery = (
   )> }
 );
 
+export type GqlFileViewQueryVariables = {
+  fileId: Scalars['String'];
+};
+
+
+export type GqlFileViewQuery = (
+  { __typename?: 'Query' }
+  & { getFile: (
+    { __typename?: 'File' }
+    & Pick<GqlFile, 'id' | 'name' | 'text'>
+  ) }
+);
+
 
 export const GetListDocument = gql`
     query GetList($id: String) {
@@ -111,120 +122,44 @@ export function useGetListLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHook
 export type GetListQueryHookResult = ReturnType<typeof useGetListQuery>;
 export type GetListLazyQueryHookResult = ReturnType<typeof useGetListLazyQuery>;
 export type GetListQueryResult = ApolloReactCommon.QueryResult<GqlGetListQuery, GqlGetListQueryVariables>;
-
-
-export type ResolverTypeWrapper<T> = Promise<T> | T;
-
-
-export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
-  fragment: string;
-  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
-};
-
-export type Resolver<TResult, TParent = {}, TContext = {}, TArgs = {}> =
-  | ResolverFn<TResult, TParent, TContext, TArgs>
-  | StitchingResolver<TResult, TParent, TContext, TArgs>;
-
-export type ResolverFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Promise<TResult> | TResult;
-
-export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => AsyncIterator<TResult> | Promise<AsyncIterator<TResult>>;
-
-export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => TResult | Promise<TResult>;
-
-export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
-  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
+export const FileViewDocument = gql`
+    query FileView($fileId: String!) {
+  getFile(id: $fileId) {
+    id
+    name
+    text
+  }
 }
+    `;
+export type FileViewComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GqlFileViewQuery, GqlFileViewQueryVariables>, 'query'> & ({ variables: GqlFileViewQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<any, TParent, TContext, TArgs>;
-  resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
-}
+    export const FileViewComponent = (props: FileViewComponentProps) => (
+      <ApolloReactComponents.Query<GqlFileViewQuery, GqlFileViewQueryVariables> query={FileViewDocument} {...props} />
+    );
+    
 
-export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
-  | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
-  | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
-
-export type SubscriptionResolver<TResult, TKey extends string, TParent = {}, TContext = {}, TArgs = {}> =
-  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
-  | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
-
-export type TypeResolveFn<TTypes, TParent = {}, TContext = {}> = (
-  parent: TParent,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
-
-export type isTypeOfResolverFn<T = {}> = (obj: T, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
-
-export type NextResolverFn<T> = () => Promise<T>;
-
-export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs = {}> = (
-  next: NextResolverFn<TResult>,
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => TResult | Promise<TResult>;
-
-/** Mapping between all available schema types and the resolvers types */
-export type GqlResolversTypes = {
-  String: ResolverTypeWrapper<Scalars['String']>,
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
-  File: ResolverTypeWrapper<GqlFile>,
-  ITEM_TYPE: GqlItem_Type,
-  ListItem: ResolverTypeWrapper<GqlListItem>,
-  Query: ResolverTypeWrapper<{}>,
-};
-
-/** Mapping between all available schema types and the resolvers parents */
-export type GqlResolversParentTypes = {
-  String: Scalars['String'],
-  Boolean: Scalars['Boolean'],
-  File: GqlFile,
-  ITEM_TYPE: GqlItem_Type,
-  ListItem: GqlListItem,
-  Query: {},
-};
-
-export type GqlFileResolvers<ContextType = any, ParentType extends GqlResolversParentTypes['File'] = GqlResolversParentTypes['File']> = {
-  id?: Resolver<GqlResolversTypes['String'], ParentType, ContextType>,
-  name?: Resolver<GqlResolversTypes['String'], ParentType, ContextType>,
-  text?: Resolver<GqlResolversTypes['String'], ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
-export type GqlListItemResolvers<ContextType = any, ParentType extends GqlResolversParentTypes['ListItem'] = GqlResolversParentTypes['ListItem']> = {
-  id?: Resolver<GqlResolversTypes['String'], ParentType, ContextType>,
-  name?: Resolver<GqlResolversTypes['String'], ParentType, ContextType>,
-  type?: Resolver<GqlResolversTypes['ITEM_TYPE'], ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-};
-
-export type GqlQueryResolvers<ContextType = any, ParentType extends GqlResolversParentTypes['Query'] = GqlResolversParentTypes['Query']> = {
-  getList?: Resolver<Array<GqlResolversTypes['ListItem']>, ParentType, ContextType, RequireFields<GqlQueryGetListArgs, never>>,
-  getFile?: Resolver<GqlResolversTypes['File'], ParentType, ContextType, RequireFields<GqlQueryGetFileArgs, 'id'>>,
-};
-
-export type GqlResolvers<ContextType = any> = {
-  File?: GqlFileResolvers<ContextType>,
-  ListItem?: GqlListItemResolvers<ContextType>,
-  Query?: GqlQueryResolvers<ContextType>,
-};
-
-
+/**
+ * __useFileViewQuery__
+ *
+ * To run a query within a React component, call `useFileViewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFileViewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFileViewQuery({
+ *   variables: {
+ *      fileId: // value for 'fileId'
+ *   },
+ * });
+ */
+export function useFileViewQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GqlFileViewQuery, GqlFileViewQueryVariables>) {
+        return ApolloReactHooks.useQuery<GqlFileViewQuery, GqlFileViewQueryVariables>(FileViewDocument, baseOptions);
+      }
+export function useFileViewLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GqlFileViewQuery, GqlFileViewQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GqlFileViewQuery, GqlFileViewQueryVariables>(FileViewDocument, baseOptions);
+        }
+export type FileViewQueryHookResult = ReturnType<typeof useFileViewQuery>;
+export type FileViewLazyQueryHookResult = ReturnType<typeof useFileViewLazyQuery>;
+export type FileViewQueryResult = ApolloReactCommon.QueryResult<GqlFileViewQuery, GqlFileViewQueryVariables>;
