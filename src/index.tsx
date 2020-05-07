@@ -1,6 +1,6 @@
 import * as rd from "react-dom";
 import * as React from "react";
-import { Providers } from "./providers";
+import { Providers } from "./Providers";
 import { MainPage } from "./pages/MainPage/MainPage";
 
 let elementById = document.getElementById("app");

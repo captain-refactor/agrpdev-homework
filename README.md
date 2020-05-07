@@ -6,6 +6,7 @@ https://github.com/agrpdev/homeworks/blob/master/frontend_react.pdf
 ## Build instructions
 
 - `npm install`
+- `npm test`
 - `npm build`
 - `npm start`
 
