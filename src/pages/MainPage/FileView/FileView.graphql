@@ -1,0 +1,7 @@
+query FileView($fileId: String!){
+    getFile(id: $fileId){
+        id
+        name
+        text
+    }
+}
