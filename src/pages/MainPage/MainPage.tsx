@@ -1,10 +1,11 @@
 import Container from "@material-ui/core/Container";
 import * as React from "react";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Desktops } from "./Desktops";
 import { FileTree } from "./FileTree/FileTree";
+import { FilesView } from "./FileView/FilesView";
+import { OpenedFilesContextProvider } from "./OpenedFilesContextProvider";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -22,12 +23,14 @@ export function MainPage() {
         </Grid>
       </Grid>
       <Grid container className={cls.content}>
-        <Grid item md={6}>
-          <FileTree />
-        </Grid>
-        <Grid item md={6}>
-          <Paper elevation={1}></Paper>
-        </Grid>
+        <OpenedFilesContextProvider>
+          <Grid item md={4}>
+            <FileTree />
+          </Grid>
+          <Grid item md={8}>
+            <FilesView />
+          </Grid>
+        </OpenedFilesContextProvider>
       </Grid>
     </Container>
   );

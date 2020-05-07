@@ -2,8 +2,8 @@ import List from "@material-ui/core/List";
 import { PropsWithChildren } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ListItem from "@material-ui/core/ListItem";
-import Button from "@material-ui/core/Button";
 import React from "react";
+import {AppButton} from "../../components/AppButton";
 
 export function Desktops() {
   const cls = useStyles();
@@ -23,16 +23,12 @@ export function DesktopItem(props: PropsWithChildren<unknown>) {
   const cls = useStyles();
   return (
     <ListItem className={cls.listItem} role="menuitem">
-      <Button>{props.children}</Button>
+      <AppButton>{props.children}</AppButton>
     </ListItem>
   );
 }
 
 const useStyles = makeStyles((theme) => {
-  let active = {
-    background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
-    color: "white",
-  };
   return {
     list: {
       display: "flex",
@@ -45,10 +41,6 @@ const useStyles = makeStyles((theme) => {
     listItem: {
       display: "block",
       width: "initial",
-      "& button": {
-        "&:hover": active,
-        "&:focus": active,
-      },
     },
   };
 });
